@@ -12,11 +12,7 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (session?.user) {
-      if (session.user.isAdmin) {
-        router.replace("/admin");
-      } else {
-        router.replace("/user");
-      }
+      router.replace("/profile");
     }
   }, [session, router]);
 
