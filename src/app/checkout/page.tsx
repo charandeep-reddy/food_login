@@ -1,7 +1,9 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function CheckoutPage() {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -57,6 +59,7 @@ export default function CheckoutPage() {
             setError(verifyData.error);
           } else {
             alert("Order placed successfully!");
+            router.push("/orders");
             // Optionally redirect or update UI
           }
         },
