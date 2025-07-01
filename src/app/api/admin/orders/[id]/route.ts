@@ -6,7 +6,10 @@ import Order from "@/models/Order";
 
 const ALLOWED_STATUSES = ["Pending", "Preparing", "Out for Delivery", "Delivered"];
 
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
     const session = await getServerSession(authOptions);
 
     if (!session?.user?.isAdmin) {
