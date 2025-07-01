@@ -1,8 +1,25 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import User from "@/models/User";
+import Item from "@/models/Item";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/route";
+
+// Helper to populate cart items with item details
+async function getPopulatedCart(userId: string) {
+  const user = await User.findById(userId).lean();
+  if (!user) return null;
+  const cartWithItems = await Promise.all(
+    (user.cart || []).map(async (c: any) => {
+      const item = await Item.findById(c.item).lean();
+      return {
+        item,
+        quantity: c.quantity,
+      };
+    })
+  );
+  return cartWithItems;
+}
 
 export async function GET(req: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -10,11 +27,11 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   await connectDB();
-  const user = await User.findById(session.user.id);
-  if (!user) {
+  const cartWithItems = await getPopulatedCart(session.user.id);
+  if (!cartWithItems) {
     return NextResponse.json({ error: "User not found" }, { status: 404 });
   }
-  return NextResponse.json(user.cart);
+  return NextResponse.json(cartWithItems);
 }
 
 export async function POST(req: NextRequest) {
@@ -35,7 +52,8 @@ export async function POST(req: NextRequest) {
     user.cart.push({ item: itemId, quantity });
   }
   await user.save();
-  return NextResponse.json(user.cart);
+  const cartWithItems = await getPopulatedCart(session.user.id);
+  return NextResponse.json(cartWithItems);
 }
 
 export async function DELETE(req: NextRequest) {
@@ -51,5 +69,6 @@ export async function DELETE(req: NextRequest) {
   const user = await User.findById(session.user.id);
   user.cart = user.cart.filter((c: any) => c.item.toString() !== itemId);
   await user.save();
-  return NextResponse.json(user.cart);
+  const cartWithItems = await getPopulatedCart(session.user.id);
+  return NextResponse.json(cartWithItems);
 }
