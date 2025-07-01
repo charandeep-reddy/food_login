@@ -57,6 +57,8 @@ export async function POST(req: NextRequest) {
     total,
     status: "Pending",
     paymentId: razorpay_payment_id,
+    address: user.address || "",
+    phone: user.phone || "",
   });
 
   // 4. Clear user's cart

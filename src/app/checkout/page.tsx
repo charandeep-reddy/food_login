@@ -1,11 +1,31 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 export default function CheckoutPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const { data: session, status } = useSession();
+
+  const [profile, setProfile] = useState<{ address?: string; phone?: string } | null>(null);
+  const [loadingProfile, setLoadingProfile] = useState(true);
+
+  useEffect(() => {
+    if (status === "loading") return;
+    if (!session?.user) {
+      router.replace("/login");
+      return;
+    }
+    fetch("/api/profile")
+      .then(res => res.json())
+      .then(data => {
+        setProfile(data);
+        setLoadingProfile(false);
+      })
+      .catch(() => setLoadingProfile(false));
+  }, [session, status, router]);
 
   // Helper to load the Razorpay SDK script
   const loadRazorpayScript = () =>
@@ -78,6 +98,26 @@ export default function CheckoutPage() {
       setLoading(false);
     }
   };
+
+  if (loadingProfile) {
+    return <div className="text-center py-12">Loading...</div>;
+  }
+
+  if (!profile?.address) {
+    return (
+      <div className="text-center py-12">
+        <div className="text-red-600 font-semibold mb-4">
+          Please complete your profile with a delivery address before checking out.
+        </div>
+        <a
+          href="/profile"
+          className="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+        >
+          Go to Profile
+        </a>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen gap-4">

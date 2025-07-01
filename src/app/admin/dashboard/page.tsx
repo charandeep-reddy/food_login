@@ -11,6 +11,8 @@ type Order = {
   status: string;
   paymentId: string;
   createdAt: string;
+  address: string;
+  phone: string;
 };
 
 export default function AdminDashboardPage() {
@@ -202,6 +204,8 @@ export default function AdminDashboardPage() {
             <tr>
               <th className="px-4 py-2">Order ID</th>
               <th className="px-4 py-2">User</th>
+              <th className="px-4 py-2">Address</th>
+              <th className="px-4 py-2">Phone</th>
               <th className="px-4 py-2">Items</th>
               <th className="px-4 py-2">Total</th>
               <th className="px-4 py-2">Status</th>
@@ -217,6 +221,8 @@ export default function AdminDashboardPage() {
                   {order.user?.name} <br />
                   <span className="text-xs text-gray-500">{order.user?.email}</span>
                 </td>
+                <td className="px-4 py-2">{order.address}</td>
+                <td className="px-4 py-2">{order.phone}</td>
                 <td className="px-4 py-2">
                   <ul className="list-disc pl-4">
                     {order.items.map((item, idx) => (

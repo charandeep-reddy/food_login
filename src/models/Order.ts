@@ -7,6 +7,8 @@ export interface IOrder extends Document {
   status: "Pending" | "Preparing" | "Out for Delivery" | "Delivered";
   paymentId: string;
   createdAt: Date;
+  address?: string;
+  phone?: string;
 }
 
 const OrderSchema = new Schema<IOrder>({
@@ -25,6 +27,8 @@ const OrderSchema = new Schema<IOrder>({
   },
   paymentId: { type: String, required: true },
   createdAt: { type: Date, default: Date.now },
+  address: { type: String },
+  phone: { type: String },
 });
 
 export default models.Order || model<IOrder>("Order", OrderSchema);
