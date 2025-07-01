@@ -6,6 +6,8 @@ export interface IUser extends Document {
   password: string;
   isAdmin: boolean;
   cart: { item: mongoose.Types.ObjectId; quantity: number }[];
+  address?: string;
+  phone?: string;
 }
 
 const UserSchema = new Schema<IUser>({
@@ -19,6 +21,8 @@ const UserSchema = new Schema<IUser>({
       quantity: { type: Number, required: true, default: 1 },
     },
   ],
+  address: { type: String },
+  phone: { type: String },
 });
 
 export default models.User || model<IUser>("User", UserSchema);
