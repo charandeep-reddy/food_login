@@ -74,6 +74,15 @@ export default function Navbar() {
               Admin
             </Link>
           )}
+          {/* Menu Items */}
+          {session?.user?.isAdmin && (
+            <Link
+              href="/admin/menu"
+              className={`hover:underline ${pathname === "/admin/menu" ? "font-semibold text-blue-600" : ""}`}
+            >
+              Manage-Menu
+            </Link>
+          )}
           {/* Auth */}
           {status === "authenticated" ? (
             <button
