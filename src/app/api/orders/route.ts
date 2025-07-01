@@ -65,3 +65,26 @@ export async function POST(req: NextRequest) {
 
   return NextResponse.json({ message: "Order placed successfully", order });
 }
+
+export async function GET(req: NextRequest) {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  await connectDB();
+
+  // Fetch all orders for the logged-in user, most recent first
+  const orders = await Order.find({ user: session.user.id })
+    .sort({ createdAt: -1 })
+    .lean();
+
+  // Manually populate item details for each order
+  for (const order of orders) {
+    for (const cartItem of order.items) {
+      const item = await (await import("@/models/Item")).default.findById(cartItem.item);
+      cartItem.item = item;
+    }
+  }
+
+  return NextResponse.json(orders);
+}
