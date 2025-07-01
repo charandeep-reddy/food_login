@@ -34,6 +34,6 @@ const ALLOWED_STATUSES = ["Pending", "Preparing", "Out for Delivery", "Delivered
 //     return NextResponse.json(order);
 // }
 
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }){
+export async function PATCH(){
     return NextResponse.json({ message: "Not implemented" });
 }
