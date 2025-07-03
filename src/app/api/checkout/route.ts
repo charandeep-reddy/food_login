@@ -38,9 +38,6 @@ export async function POST(req: NextRequest) {
     0
   );
 
-  console.log("Razorpay keys:", process.env.RAZORPAY_KEY_ID, process.env.RAZORPAY_KEY_SECRET);
-  console.log("Total amount:", total);
-
   // Create Razorpay order
   const options = {
     amount: total * 100, // in paise

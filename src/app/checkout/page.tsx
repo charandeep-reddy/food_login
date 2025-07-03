@@ -78,9 +78,7 @@ export default function CheckoutPage() {
           if (verifyData.error) {
             setError(verifyData.error);
           } else {
-            alert("Order placed successfully!");
-            router.push("/orders");
-            // Optionally redirect or update UI
+            router.push(`/order-confirmation?orderId=${verifyData.order._id}`);
           }
         },
         prefill: {
