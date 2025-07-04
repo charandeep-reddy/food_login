@@ -125,14 +125,14 @@ export default function ProfilePage() {
             >
               {saving ? "Saving..." : "Save"}
             </button>
-            <button
+      <button
               type="button"
               onClick={() => setEditMode(false)}
               className="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400 transition"
-            >
+      >
               Cancel
-            </button>
-          </div>
+      </button>
+    </div>
           {error && <div className="text-red-500 text-center">{error}</div>}
           {success && <div className="text-green-600 text-center">{success}</div>}
         </form>
