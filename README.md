@@ -13,12 +13,12 @@
 - **Route Protection:** User and admin pages are protected based on role.
 - **Responsive Design:** Basic mobile and desktop support.
 - **Validation:** Zod is used for robust API input validation.
+- **Order Confirmation Page:** Show a clear confirmation after successful checkout.
 
 ---
 
 ## 🛠️ What's Planned / To Improve
 
-- **Order Confirmation Page:** Show a clear confirmation after successful checkout.
 - **Order History:** Dedicated page for users to view past orders.
 - **UI/UX Polish:** Toast notifications, improved mobile support, and better visuals.
 - **Image Upload:** Allow admins to upload images for menu items (currently uses URLs).
