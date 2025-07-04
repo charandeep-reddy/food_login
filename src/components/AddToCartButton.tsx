@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { useCart } from "@/contexts/CartContext";
 
 type Props = {
   itemId: string;
@@ -9,7 +10,7 @@ type Props = {
 export default function AddToCartButton({ itemId }: Props) {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
-
+  const { refreshCart } = useCart();
   const handleAddToCart = async () => {
     setLoading(true);
     setMessage(null);
@@ -21,6 +22,7 @@ export default function AddToCartButton({ itemId }: Props) {
       });
       if (!res.ok) throw new Error("Failed to add to cart");
       setMessage("Added!");
+      refreshCart();
     } catch (err) {
       setMessage("Error adding to cart");
     } finally {

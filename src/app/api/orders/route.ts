@@ -6,6 +6,13 @@ import User from "@/models/User";
 import Order from "@/models/Order";
 import Razorpay from "razorpay";
 import crypto from "crypto";
+import { z } from "zod";
+
+const orderPaymentSchema = z.object({
+  razorpay_payment_id: z.string().min(1, "Payment ID is required"),
+  razorpay_order_id: z.string().min(1, "Order ID is required"),
+  razorpay_signature: z.string().min(1, "Signature is required"),
+});
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -13,13 +20,25 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   await connectDB();
-  const { razorpay_payment_id, razorpay_order_id, razorpay_signature } = await req.json();
+
+  // Zod validation
+  const body = await req.json();
+  const result = orderPaymentSchema.safeParse(body);
+
+  if (!result.success) {
+    return NextResponse.json(
+      { error: "Invalid data", details: result.error.errors },
+      { status: 400 }
+    );
+  }
+
+  const { razorpay_payment_id, razorpay_order_id, razorpay_signature } = result.data;
 
   // 1. Verify payment signature
-  const body = razorpay_order_id + "|" + razorpay_payment_id;
+  const signatureBody = razorpay_order_id + "|" + razorpay_payment_id;
   const expectedSignature = crypto
     .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET!)
-    .update(body)
+    .update(signatureBody)
     .digest("hex");
 
   if (expectedSignature !== razorpay_signature) {

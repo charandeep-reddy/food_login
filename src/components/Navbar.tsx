@@ -3,22 +3,14 @@ import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
+import { useCart } from "@/contexts/CartContext";
 
-// (Optional) If you want to show cart count, fetch it here
-// For now, we'll use a placeholder
-function useCartCount() {
-  const [count, setCount] = useState(0);
-  useEffect(() => {
-    // Fetch cart count from API if you have it
-    // setCount(fetchedCount);
-  }, []);
-  return count;
-}
+
 
 export default function Navbar() {
   const { data: session, status } = useSession();
   const pathname = usePathname();
-  const cartCount = useCartCount();
+  const { count, refreshCart } = useCart();
 
   return (
     <nav className="bg-white shadow mb-8">
@@ -41,9 +33,9 @@ export default function Navbar() {
             className={`relative hover:underline ${pathname === "/cart" ? "font-semibold text-blue-600" : ""}`}
           >
             Cart
-            {cartCount > 0 && (
+            {count > 0 && (
               <span className="ml-1 bg-green-600 text-white rounded-full px-2 text-xs absolute -top-2 -right-3">
-                {cartCount}
+                {count}
               </span>
             )}
           </Link>

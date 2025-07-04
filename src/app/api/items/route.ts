@@ -3,6 +3,13 @@ import { connectDB } from "@/lib/db";
 import Item from "@/models/Item";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/route";
+import { z } from "zod";
+
+const itemSchema = z.object({
+  name: z.string().min(1),
+  price: z.number().min(0),
+  image: z.string().min(1),
+});
 
 export async function GET(req: NextRequest) {
   await connectDB();
@@ -18,10 +25,18 @@ export async function POST(req: NextRequest) {
   }
 
   await connectDB();
-  const { name, price, image } = await req.json();
-  if (!name || !price || !image) {
-    return NextResponse.json({ error: "All fields required" }, { status: 400 });
+  const body = await req.json();
+  const result = itemSchema.safeParse(body);
+
+  if (!result.success) {
+    return NextResponse.json(
+      { error: "Invalid data", details: result.error.errors },
+      { status: 400 }
+    );
   }
+
+  const { name, price, image } = result.data;
+
   if (await Item.findOne({ name })) {
     return NextResponse.json({ error: "Item already exists" }, { status: 400 });
   }

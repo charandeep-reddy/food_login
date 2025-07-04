@@ -2,6 +2,7 @@
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useCart } from "@/contexts/CartContext";
 
 type CartItem = {
   item: {
@@ -16,7 +17,7 @@ type CartItem = {
 export default function CartPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
-
+  const { refreshCart } = useCart();
   const [cart, setCart] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -54,6 +55,7 @@ export default function CartPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to update cart");
       setCart(data);
+      refreshCart();
     } catch (err) {
       alert("Error updating cart");
     } finally {
@@ -73,6 +75,7 @@ export default function CartPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to remove item");
       setCart(data);
+      refreshCart();
     } catch (err) {
       alert("Error removing item");
     } finally {

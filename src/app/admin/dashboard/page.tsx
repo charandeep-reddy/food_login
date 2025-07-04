@@ -116,9 +116,9 @@ export default function AdminDashboardPage() {
   }
 
   return (
-    <main className="max-w-5xl mx-auto py-8 px-4">
+    <main className="py-8 px-4">
       <h1 className="text-3xl font-bold mb-8 text-center">Admin Dashboard</h1>
-      <div className="flex flex-col sm:flex-row gap-4 mb-4 items-center">
+      <div className="flex flex-col sm:flex-row gap-4 mb-4 items-center justify-center">
         {/* Status Filter Dropdown */}
         <div>
           <label className="block text-sm font-medium mb-1">Status</label>

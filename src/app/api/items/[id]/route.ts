@@ -3,6 +3,13 @@ import { connectDB } from "@/lib/db";
 import Item from "@/models/Item";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/route";
+import { z } from "zod";
+
+const itemSchema = z.object({
+  name: z.string().min(1),
+  price: z.number().min(0),
+  image: z.string().min(1),
+});
 
 // PATCH /api/items/[id] - Edit item (admin only)
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -12,7 +19,17 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   }
 
   await connectDB();
-  const { name, price, image } = await req.json();
+  const body = await req.json();
+  const result = itemSchema.safeParse(body);
+
+  if (!result.success) {
+    return NextResponse.json(
+      { error: "Invalid data", details: result.error.errors },
+      { status: 400 }
+    );
+  }
+
+  const { name, price, image } = result.data;
   const { id } = await params;
   const item = await Item.findByIdAndUpdate(
     id,

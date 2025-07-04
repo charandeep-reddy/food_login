@@ -6,7 +6,7 @@ import Order from "@/models/Order";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -15,8 +15,8 @@ export async function GET(
     }
     await connectDB();
 
-    
-    const order = await Order.findOne({ _id: await params.id, user: session.user.id })
+    const { id } = await params;
+    const order = await Order.findOne({ _id: id, user: session.user.id })
       .populate("items.item") // assumes items: [{ item: ObjectId, ... }]
       .lean();
 
