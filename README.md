@@ -31,6 +31,46 @@
 
 ---
 
+## 🏁 Getting Started
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/charandeep-reddy/food_login.git
+   cd foodlogin
+   ```
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+3. **Set up environment variables:**
+   - Copy `.env.example` to `.env.local` (or create `.env.local` if not present).
+   - Fill in the required values (see below).
+4. **Run the development server:**
+   ```bash
+   npm run dev
+   ```
+5. **Open [http://localhost:3000](http://localhost:3000) in your browser.**
+
+---
+
+## 🔑 Environment Variables
+
+Create a `.env.local` file in the root directory with the following variables:
+
+```
+MONGODB_URI=your_mongodb_connection_string
+NEXTAUTH_SECRET=your_nextauth_secret
+RAZORPAY_KEY_ID=your_razorpay_key_id
+RAZORPAY_KEY_SECRET=your_razorpay_key_secret
+NEXT_PUBLIC_RAZORPAY_KEY_ID = same as razorpay_key_id
+```
+
+- `MONGODB_URI`: MongoDB connection string (Atlas or local)
+- `NEXTAUTH_SECRET`: Secret for NextAuth.js sessions
+- `RAZORPAY_KEY_ID` and `RAZORPAY_KEY_SECRET`: Razorpay test credentials (get from Razorpay dashboard)
+
+---
+
 ## 📝 How to Help or Test
 
 - Try signing up, browsing the menu, adding to cart, and placing an order.
