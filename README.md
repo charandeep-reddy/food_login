@@ -1,36 +1,44 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# FoodLogin – Project Status
 
-## Getting Started
+## 🚀 What's Working
 
-First, run the development server:
+- **User Authentication:** Sign up, login, and session management with NextAuth.js.
+- **User Profile:** Update name, address, and phone number.
+- **Menu Browsing:** All users can view available menu items.
+- **Cart:** Add, update, and remove items; view cart contents.
+- **Checkout:** Secure checkout flow with Razorpay (test mode, no real money).
+- **Order Placement:** Orders include address and phone; cart is cleared after order.
+- **Order Management:** Users can view their orders; admins can view and update all orders.
+- **Admin Dashboard:** Manage menu (add, edit, delete items), view and filter orders.
+- **Route Protection:** User and admin pages are protected based on role.
+- **Responsive Design:** Basic mobile and desktop support.
+- **Validation:** Zod is used for robust API input validation.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🛠️ What's Planned / To Improve
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Order Confirmation Page:** Show a clear confirmation after successful checkout.
+- **Order History:** Dedicated page for users to view past orders.
+- **UI/UX Polish:** Toast notifications, improved mobile support, and better visuals.
+- **Image Upload:** Allow admins to upload images for menu items (currently uses URLs).
+- **Pagination:** For orders and menu if data grows large.
+- **Admin Analytics:** Show stats like total orders, revenue, etc.
+- **Notifications:** Email/SMS or in-app notifications for order status updates.
+- **Production Readiness:** Remove any temporary build ignores, fix all ESLint/type errors, and ensure all environment variables are set before going live.
+- **Comprehensive Testing:** Add more unit and integration tests.
+- **Documentation:** Expand usage and contribution docs for new developers/testers.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 📝 How to Help or Test
 
-To learn more about Next.js, take a look at the following resources:
+- Try signing up, browsing the menu, adding to cart, and placing an order.
+- If you're an admin, test menu management and order status updates.
+- Report any bugs, confusing flows, or suggestions for improvement!
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**Note:**  
+Razorpay is in test mode (no real money is charged).  
+MongoDB Atlas free tier is used for the database.
