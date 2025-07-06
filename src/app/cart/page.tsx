@@ -22,6 +22,7 @@ export default function CartPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [updating, setUpdating] = useState(false);
+  const [updatingItem, setUpdatingItem] = useState<string | null>(null);
 
   // Fetch cart on mount
   useEffect(() => {
@@ -45,7 +46,9 @@ export default function CartPage() {
 
   // Update quantity
   const handleUpdate = async (itemId: string, quantity: number) => {
-    setUpdating(true);
+    if (quantity < 1) return; // Prevent negative quantities
+    
+    setUpdatingItem(itemId);
     try {
       const res = await fetch("/api/cart", {
         method: "POST",
@@ -59,13 +62,28 @@ export default function CartPage() {
     } catch (err) {
       alert("Error updating cart");
     } finally {
-      setUpdating(false);
+      setUpdatingItem(null);
+    }
+  };
+
+  // Increase quantity
+  const handleIncrease = (itemId: string, currentQuantity: number) => {
+    handleUpdate(itemId, currentQuantity + 1);
+  };
+
+  // Decrease quantity
+  const handleDecrease = (itemId: string, currentQuantity: number) => {
+    if (currentQuantity <= 1) {
+      // If quantity is 1, remove the item instead
+      handleRemove(itemId);
+    } else {
+      handleUpdate(itemId, currentQuantity - 1);
     }
   };
 
   // Remove item
   const handleRemove = async (itemId: string) => {
-    setUpdating(true);
+    setUpdatingItem(itemId);
     try {
       const res = await fetch("/api/cart", {
         method: "DELETE",
@@ -79,7 +97,7 @@ export default function CartPage() {
     } catch (err) {
       alert("Error removing item");
     } finally {
-      setUpdating(false);
+      setUpdatingItem(null);
     }
   };
 
@@ -109,53 +127,92 @@ export default function CartPage() {
     <main className="max-w-3xl mx-auto py-8 px-4">
       <h1 className="text-3xl font-bold mb-8 text-center">Your Cart</h1>
       <div className="space-y-6">
-        {cart.map((cartItem) => (
-          <div key={cartItem.item._id} className="flex items-center gap-4 bg-white rounded shadow p-4">
-            <img
-              src={cartItem.item.image}
-              alt={cartItem.item.name}
-              className="w-20 h-20 object-cover rounded"
-            />
-            <div className="flex-1">
-              <div className="font-medium">{cartItem.item.name}</div>
-              <div className="text-gray-600 text-sm">₹{cartItem.item.price}</div>
-              <div className="flex items-center gap-2 mt-2">
-                <label className="text-sm">Qty:</label>
-                <input
-                  type="number"
-                  min={1}
-                  value={cartItem.quantity}
-                  disabled={updating}
-                  onChange={e =>
-                    handleUpdate(cartItem.item._id, Number(e.target.value))
-                  }
-                  className="w-16 border rounded px-2 py-1"
-                />
-                <button
-                  onClick={() => handleRemove(cartItem.item._id)}
-                  disabled={updating}
-                  className="text-red-600 hover:underline ml-2"
-                >
-                  Remove
-                </button>
+        {cart.map((cartItem) => {
+          const isUpdating = updatingItem === cartItem.item._id;
+          
+          return (
+            <div key={cartItem.item._id} className="flex items-center gap-4 bg-white rounded shadow p-4">
+              <img
+                src={cartItem.item.image}
+                alt={cartItem.item.name}
+                className="w-20 h-20 object-cover rounded"
+              />
+              <div className="flex-1">
+                <div className="font-medium">{cartItem.item.name}</div>
+                <div className="text-gray-600 text-sm">₹{cartItem.item.price}</div>
+                <div className="flex items-center gap-3 mt-3">
+                  <label className="text-sm font-medium">Quantity:</label>
+                  
+                  {/* Quantity Controls */}
+                  <div className="flex items-center border rounded-lg overflow-hidden">
+                    <button
+                      onClick={() => handleDecrease(cartItem.item._id, cartItem.quantity)}
+                      disabled={isUpdating}
+                      className="px-3 py-1 bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      aria-label="Decrease quantity"
+                    >
+                      -
+                    </button>
+                    
+                    <span className="px-4 py-1 min-w-[3rem] text-center font-medium bg-white">
+                      {isUpdating ? "..." : cartItem.quantity}
+                    </span>
+                    
+                    <button
+                      onClick={() => handleIncrease(cartItem.item._id, cartItem.quantity)}
+                      disabled={isUpdating}
+                      className="px-3 py-1 bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      aria-label="Increase quantity"
+                    >
+                      +
+                    </button>
+                  </div>
+
+                  {/* Manual Input (Optional) */}
+                  <input
+                    type="number"
+                    min={1}
+                    value={cartItem.quantity}
+                    disabled={isUpdating}
+                    onChange={e => {
+                      const value = Number(e.target.value);
+                      if (value >= 1) {
+                        handleUpdate(cartItem.item._id, value);
+                      }
+                    }}
+                    className="w-16 border rounded px-2 py-1 text-center"
+                    aria-label="Manual quantity input"
+                  />
+                  
+                  <button
+                    onClick={() => handleRemove(cartItem.item._id)}
+                    disabled={isUpdating}
+                    className="text-red-600 hover:text-red-800 hover:underline ml-2 transition-colors"
+                  >
+                    Remove
+                  </button>
+                </div>
+              </div>
+              <div className="font-bold text-green-700 text-lg">
+                ₹{cartItem.item.price * cartItem.quantity}
               </div>
             </div>
-            <div className="font-bold text-green-700">
-              ₹{cartItem.item.price * cartItem.quantity}
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
-      <div className="text-right text-xl font-bold mt-8">
-        Total: ₹{total}
-      </div>
-      <div className="flex justify-end mt-4">
-        <a
-          href="/checkout"
-          className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition"
-        >
-          Proceed to Checkout
-        </a>
+      
+      <div className="bg-gray-50 rounded-lg p-6 mt-8">
+        <div className="text-right text-2xl font-bold text-green-700">
+          Total: ₹{total}
+        </div>
+        <div className="flex justify-end mt-4">
+          <a
+            href="/checkout"
+            className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium text-lg"
+          >
+            Proceed to Checkout
+          </a>
+        </div>
       </div>
     </main>
   );

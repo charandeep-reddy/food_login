@@ -33,7 +33,7 @@ export default function RootLayout({
         <NextAuthProvider>
           <CartProvider>
             <Navbar />
-            {children}
+        {children}
           </CartProvider>
         </NextAuthProvider>
       </body>
