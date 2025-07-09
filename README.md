@@ -81,4 +81,4 @@ NEXT_PUBLIC_RAZORPAY_KEY_ID = same as razorpay_key_id
 
 **Note:**  
 Razorpay is in test mode (no real money is charged).  
-MongoDB Atlas free tier is used for the database.
+MongoDB Atlas free tier is used for the database or use localhost for testing purposes
